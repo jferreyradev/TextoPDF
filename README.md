@@ -27,11 +27,20 @@ npm --version
 ### Uso
 
 1. Abrir terminal (cmd) 
-2. Posicionarse en el directorio de la aplicacion
-3. Ejecutar sentencia: [^1]
+2. Posicionarse en el directorio de la aplicacion    
+3. Ejecutar sentencia para instalar las dependencias: [^1].
+
+```
+npm install
+```
+
+4. Una vez instaladas las depenedencias podemos hacer uso de la aplicación: [^2].
+
 ```
 node generapdf.js <DIR>
 
 ``` 
 
-[^1]: Donde `<DIR>` es el directorio donde se encuentran los archivos TXT a procesesar. 
+[^1]: Solamente la primera vez.
+
+[^2]: Donde `<DIR>` es el directorio donde se encuentran los archivos TXT a procesesar. 
