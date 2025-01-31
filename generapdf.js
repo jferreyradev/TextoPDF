@@ -3,16 +3,19 @@ const fs = require('fs');
 const readLine = require('readline');
 const path = require('path');
 
-function genPDF(file) {
+function genPDF(file, newDir) {
+   console.log(file)
+   console.log(path.join(newDir, file.split("\\")[1]))
+   console.log(file.split('.')[0] + '.pdf')
    const rl = readLine.createInterface({
       input: fs.createReadStream(file)
-      /*output : process.stdout,
-      terminal: false*/
    });
 
    const pdfDoc = new PDFDocument({ layout: 'landscape', size: 'A4', font: 'Courier', margin: 5 });
 
-   pdfDoc.pipe(fs.createWriteStream(file.split('.')[0] + '.pdf'));
+   const filePDF=(path.join(newDir, file.split("\\")[1]));
+
+   pdfDoc.pipe(fs.createWriteStream(filePDF.split('.')[0] + '.pdf'));
 
    pdfDoc.fontSize(5.8);
 
@@ -32,6 +35,7 @@ function genPDF(file) {
 }
 
 function getFilesFromDir(folderPath) {
+
    try {
       const isFile = fileName => {
          return fs.lstatSync(fileName).isFile();
@@ -42,8 +46,8 @@ function getFilesFromDir(folderPath) {
       }).filter(isFile);
 
    } catch (err) {
-      //console.error(err);
-      console.error("No existe el directorio de entrada");
+
+      console.error("No existe el directorio de entrada", err);
    }
 }
 
@@ -52,16 +56,6 @@ function main() {
 
    const args = process.argv.slice(2);
 
-   /*const folderName = './output';
-
-   try {
-      if (!fs.existsSync(folderName)) {
-         fs.mkdirSync(folderName);
-      }
-   } catch (err) {
-      console.error(err);
-   }
-   */
 
    if (!args[0]) {
       console.log("Debe especificar el directorio donde están los archivos a convertir.");
@@ -72,21 +66,27 @@ function main() {
       const files = getFilesFromDir(args[0]);
 
       if (files) {
+
+         const folderName = path.join(args[0], 'pdf');
+         console.log('----FOLDER---'+folderName)
+         try {
+            if (!fs.existsSync(folderName)) {
+               fs.mkdirSync(folderName);
+            }
+         } catch (err) {
+            console.error(err);
+         }
+
          files.forEach(element => {
             if (path.extname(element) === ".txt") {
                console.log("Procesando: " + element);
-               genPDF(element);
+               genPDF(element, folderName);
             }
          })
       }
    }
 
-   //console.log(getFilesFromDir(args[0]));
-   /*
-   args.forEach(el => {
-      genPDF(el);
-   });
-   */
+
 
 }
 
