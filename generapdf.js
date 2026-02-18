@@ -3,28 +3,57 @@ const fs = require('fs');
 const readLine = require('readline');
 const path = require('path');
 
+// Load PDF configuration
+let pdfConfig;
+try {
+   pdfConfig = JSON.parse(fs.readFileSync('./pdf-config.json', 'utf8'));
+} catch (err) {
+   console.error('Error loading pdf-config.json, using default configuration:', err.message);
+   // Default configuration if config file is not found
+   pdfConfig = {
+      document: { layout: 'landscape', size: 'A4', font: 'Courier', margin: 5 },
+      text: { fontSize: 5.8 },
+      logo: { path: './public/logo_dgs.png', x: 700, y: 10, width: 126, height: 31 },
+      newPage: { layout: 'landscape', size: 'A4', font: 'Courier', margin: 10 }
+   };
+}
+
 function genPDF(file, newDir) {
    console.log(file)
-   console.log(path.join(newDir, file.split("\\")[1]))
+   const fileName = path.basename(file);
+   console.log(path.join(newDir, fileName))
    console.log(file.split('.')[0] + '.pdf')
    const rl = readLine.createInterface({
       input: fs.createReadStream(file)
    });
 
-   const pdfDoc = new PDFDocument({ layout: 'landscape', size: 'A4', font: 'Courier', margin: 5 });
+   const pdfDoc = new PDFDocument({ 
+      layout: pdfConfig.document.layout, 
+      size: pdfConfig.document.size, 
+      font: pdfConfig.document.font, 
+      margin: pdfConfig.document.margin 
+   });
 
-   const filePDF=(path.join(newDir, file.split("\\")[1]));
+   const filePDF = path.join(newDir, fileName);
 
    pdfDoc.pipe(fs.createWriteStream(filePDF.split('.')[0] + '.pdf'));
 
-   pdfDoc.fontSize(5.8);
+   pdfDoc.fontSize(pdfConfig.text.fontSize);
 
    rl.on('line', function (text) {
       if (text.includes('\f')) {
-         pdfDoc.image('./public/logo_dgs.png', 700, 10, { width: 126, height: 31 });
-         pdfDoc.addPage(
-            { layout: 'landscape', size: 'A4', font: 'Courier', margin: 10 }
+         pdfDoc.image(
+            pdfConfig.logo.path, 
+            pdfConfig.logo.x, 
+            pdfConfig.logo.y, 
+            { width: pdfConfig.logo.width, height: pdfConfig.logo.height }
          );
+         pdfDoc.addPage({
+            layout: pdfConfig.newPage.layout, 
+            size: pdfConfig.newPage.size, 
+            font: pdfConfig.newPage.font, 
+            margin: pdfConfig.newPage.margin
+         });
       }
       pdfDoc.text(text);
    });

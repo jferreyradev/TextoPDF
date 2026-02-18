@@ -67,6 +67,46 @@ bun --version
     bun generapdf.js <DIR>
     ```
 
+### Configuración del PDF
+
+La aplicación utiliza un archivo de configuración `pdf-config.json` para personalizar la generación de los documentos PDF. Este archivo permite configurar:
+
+- **Documento**: Orientación (landscape/portrait), tamaño de página (A4, Letter, etc.), fuente, márgenes
+- **Texto**: Tamaño de fuente
+- **Logo**: Ruta, posición (x, y) y dimensiones (ancho, alto)
+- **Nueva Página**: Configuración para páginas adicionales
+
+#### Ejemplo de configuración (`pdf-config.json`):
+
+```json
+{
+  "document": {
+    "layout": "landscape",
+    "size": "A4",
+    "font": "Courier",
+    "margin": 5
+  },
+  "text": {
+    "fontSize": 5.8
+  },
+  "logo": {
+    "path": "./public/logo_dgs.png",
+    "x": 700,
+    "y": 10,
+    "width": 126,
+    "height": 31
+  },
+  "newPage": {
+    "layout": "landscape",
+    "size": "A4",
+    "font": "Courier",
+    "margin": 10
+  }
+}
+```
+
+Si el archivo `pdf-config.json` no existe, la aplicación utilizará la configuración por defecto.
+
 ### Crear ejecutable con Bun
 
 Para crear un ejecutable standalone que incluya los archivos de la carpeta `public`:
@@ -76,9 +116,10 @@ Para crear un ejecutable standalone que incluya los archivos de la carpeta `publ
     bun build --compile generapdf.js --outfile generapdf.exe
     ```
 
-2. Copiar la carpeta `public` al mismo directorio donde está el ejecutable:
+2. Copiar la carpeta `public` y el archivo `pdf-config.json` al mismo directorio donde está el ejecutable:
     ```
     generapdf.exe
+    pdf-config.json
     public/
     └── logo_dgs.png
     ```
