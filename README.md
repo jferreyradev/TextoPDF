@@ -39,6 +39,47 @@ La comprobación se puede realizar con:
 bun --version
 ```
 
+### Configuración
+
+La aplicación permite personalizar varios aspectos de la generación de PDFs. Para modificar la configuración, edite el archivo `generapdf.js`:
+
+#### Configuración del documento PDF
+
+En la línea 14, puede modificar las siguientes propiedades:
+
+```javascript
+const pdfDoc = new PDFDocument({ layout: 'landscape', size: 'A4', font: 'Courier', margin: 5 });
+```
+
+- **layout**: Orientación del documento (`'landscape'` para horizontal, `'portrait'` para vertical)
+- **size**: Tamaño del papel (`'A4'`, `'LETTER'`, `'LEGAL'`, etc.)
+- **font**: Fuente del texto (`'Courier'`, `'Helvetica'`, `'Times-Roman'`, etc.)
+- **margin**: Margen en puntos (5 por defecto)
+
+En la línea 20, puede ajustar el tamaño de la fuente:
+
+```javascript
+pdfDoc.fontSize(5.8);
+```
+
+#### Configuración del logo
+
+En la línea 24, puede modificar el logo que aparece en cada página:
+
+```javascript
+pdfDoc.image('./public/logo_dgs.png', 700, 10, { width: 126, height: 31 });
+```
+
+- **Ruta del logo**: `'./public/logo_dgs.png'` - Coloque su logo en la carpeta `public/`
+- **Posición X**: `700` - Coordenada horizontal (en puntos desde la izquierda)
+- **Posición Y**: `10` - Coordenada vertical (en puntos desde arriba)
+- **width**: `126` - Ancho del logo en puntos
+- **height**: `31` - Alto del logo en puntos
+
+#### Directorio de salida
+
+Los archivos PDF generados se guardan en una subcarpeta `pdf/` dentro del directorio de entrada especificado.
+
 ### Uso
 
 1. Abrir terminal (cmd)
