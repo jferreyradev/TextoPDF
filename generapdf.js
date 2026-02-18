@@ -101,8 +101,13 @@ function main() {
    
    for (let i = 0; i < args.length; i++) {
       if (args[i] === '--config' || args[i] === '-c') {
-         configPath = args[i + 1];
-         i++; // Skip the next argument
+         if (i + 1 < args.length) {
+            configPath = args[i + 1];
+            i++; // Skip the next argument
+         } else {
+            console.error('Error: --config/-c requires a file path argument');
+            process.exit(1);
+         }
       } else if (!directoryPath) {
          directoryPath = args[i];
       }
