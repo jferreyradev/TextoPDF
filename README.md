@@ -45,7 +45,7 @@ La aplicación permite personalizar varios aspectos de la generación de PDFs. P
 
 #### Configuración del documento PDF
 
-En la línea 14, puede modificar las siguientes propiedades:
+Localize la inicialización de `PDFDocument` en `generapdf.js` (dentro de la función `genPDF`):
 
 ```javascript
 const pdfDoc = new PDFDocument({ layout: 'landscape', size: 'A4', font: 'Courier', margin: 5 });
@@ -56,7 +56,7 @@ const pdfDoc = new PDFDocument({ layout: 'landscape', size: 'A4', font: 'Courier
 - **font**: Fuente del texto (`'Courier'`, `'Helvetica'`, `'Times-Roman'`, etc.)
 - **margin**: Margen en puntos (5 por defecto)
 
-En la línea 20, puede ajustar el tamaño de la fuente:
+Busque la llamada a `pdfDoc.fontSize` para ajustar el tamaño de la fuente:
 
 ```javascript
 pdfDoc.fontSize(5.8);
@@ -64,7 +64,7 @@ pdfDoc.fontSize(5.8);
 
 #### Configuración del logo
 
-En la línea 24, puede modificar el logo que aparece en cada página:
+Busque la llamada a `pdfDoc.image` en `generapdf.js` para modificar el logo que aparece en cada página:
 
 ```javascript
 pdfDoc.image('./public/logo_dgs.png', 700, 10, { width: 126, height: 31 });
@@ -99,7 +99,7 @@ pdfDoc.image('./public/logo_dgs.png', 450, 10, { width: 126, height: 31 });
 
 **Ejemplo 4: Reemplazar el logo con uno personalizado**
 1. Coloque su imagen en la carpeta `public/` (por ejemplo: `public/mi_logo.png`)
-2. Modifique la línea 24 en `generapdf.js`:
+2. Busque la llamada a `pdfDoc.image` en `generapdf.js` y modifíquela:
    ```javascript
    pdfDoc.image('./public/mi_logo.png', 700, 10, { width: 126, height: 31 });
    ```
