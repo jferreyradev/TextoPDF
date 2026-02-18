@@ -80,6 +80,30 @@ pdfDoc.image('./public/logo_dgs.png', 700, 10, { width: 126, height: 31 });
 
 Los archivos PDF generados se guardan en una subcarpeta `pdf/` dentro del directorio de entrada especificado.
 
+#### Ejemplos de configuración
+
+**Ejemplo 1: PDF en orientación vertical con tamaño Carta**
+```javascript
+const pdfDoc = new PDFDocument({ layout: 'portrait', size: 'LETTER', font: 'Courier', margin: 10 });
+```
+
+**Ejemplo 2: Cambiar el tamaño de fuente para texto más grande**
+```javascript
+pdfDoc.fontSize(8);
+```
+
+**Ejemplo 3: Cambiar posición del logo para orientación vertical**
+```javascript
+pdfDoc.image('./public/logo_dgs.png', 450, 10, { width: 126, height: 31 });
+```
+
+**Ejemplo 4: Reemplazar el logo con uno personalizado**
+1. Coloque su imagen en la carpeta `public/` (por ejemplo: `public/mi_logo.png`)
+2. Modifique la línea 24 en `generapdf.js`:
+   ```javascript
+   pdfDoc.image('./public/mi_logo.png', 700, 10, { width: 126, height: 31 });
+   ```
+
 ### Uso
 
 1. Abrir terminal (cmd)
