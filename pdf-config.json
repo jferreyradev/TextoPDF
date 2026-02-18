@@ -1,0 +1,24 @@
+{
+  "document": {
+    "layout": "landscape",
+    "size": "A4",
+    "font": "Courier",
+    "margin": 5
+  },
+  "text": {
+    "fontSize": 5.8
+  },
+  "logo": {
+    "path": "./public/logo_dgs.png",
+    "x": 700,
+    "y": 10,
+    "width": 126,
+    "height": 31
+  },
+  "newPage": {
+    "layout": "landscape",
+    "size": "A4",
+    "font": "Courier",
+    "margin": 10
+  }
+}

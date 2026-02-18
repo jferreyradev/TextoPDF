@@ -67,6 +67,64 @@ bun --version
     bun generapdf.js <DIR>
     ```
 
+### Configuración del PDF
+
+La aplicación utiliza un archivo de configuración `pdf-config.json` para personalizar la generación de los documentos PDF. Este archivo permite configurar:
+
+- **Documento**: Orientación (landscape/portrait), tamaño de página (A4, Letter, etc.), fuente, márgenes
+- **Texto**: Tamaño de fuente
+- **Logo**: Ruta, posición (x, y) y dimensiones (ancho, alto)
+- **Nueva Página**: Configuración para páginas adicionales
+
+#### Archivo de configuración por defecto
+
+Si no se especifica un archivo de configuración, la aplicación utiliza `pdf-config.json` del directorio de la aplicación. Si este archivo no existe, se utilizan valores predeterminados.
+
+#### Especificar un archivo de configuración personalizado
+
+Puedes especificar un archivo de configuración personalizado usando la opción `--config` o `-c`:
+
+**Con Node.js:**
+```bash
+node generapdf.js <DIR> --config /ruta/a/mi-config.json
+node generapdf.js <DIR> -c /ruta/a/mi-config.json
+```
+
+**Con Bun:**
+```bash
+bun generapdf.js <DIR> --config /ruta/a/mi-config.json
+bun generapdf.js <DIR> -c /ruta/a/mi-config.json
+```
+
+#### Ejemplo de configuración (`pdf-config.json`):
+
+```json
+{
+  "document": {
+    "layout": "landscape",
+    "size": "A4",
+    "font": "Courier",
+    "margin": 5
+  },
+  "text": {
+    "fontSize": 5.8
+  },
+  "logo": {
+    "path": "./public/logo_dgs.png",
+    "x": 700,
+    "y": 10,
+    "width": 126,
+    "height": 31
+  },
+  "newPage": {
+    "layout": "landscape",
+    "size": "A4",
+    "font": "Courier",
+    "margin": 10
+  }
+}
+```
+
 ### Crear ejecutable con Bun
 
 Para crear un ejecutable standalone que incluya los archivos de la carpeta `public`:
@@ -76,16 +134,21 @@ Para crear un ejecutable standalone que incluya los archivos de la carpeta `publ
     bun build --compile generapdf.js --outfile generapdf.exe
     ```
 
-2. Copiar la carpeta `public` al mismo directorio donde está el ejecutable:
+2. Copiar la carpeta `public` y opcionalmente el archivo `pdf-config.json` al mismo directorio donde está el ejecutable:
     ```
     generapdf.exe
+    pdf-config.json (opcional)
     public/
     └── logo_dgs.png
     ```
 
+    Si no incluyes `pdf-config.json`, la aplicación usará la configuración predeterminada. También puedes usar `--config` para especificar un archivo de configuración personalizado.
+
 3. Ejecutar el programa:
     ```bash
     generapdf.exe <DIR>
+    # O con configuración personalizada:
+    generapdf.exe <DIR> --config mi-config.json
     ```
 
 El ejecutable será totalmente portable y no requerirá tener Bun o Node.js instalado.
