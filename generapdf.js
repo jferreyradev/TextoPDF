@@ -6,7 +6,8 @@ const path = require('path');
 // Load PDF configuration
 let pdfConfig;
 try {
-   pdfConfig = JSON.parse(fs.readFileSync('./pdf-config.json', 'utf8'));
+   const configPath = path.join(__dirname, 'pdf-config.json');
+   pdfConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 } catch (err) {
    console.error('Error loading pdf-config.json, using default configuration:', err.message);
    // Default configuration if config file is not found
