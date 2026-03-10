@@ -3,11 +3,28 @@ const fs = require('fs');
 const readLine = require('readline');
 const path = require('path');
 
+// Get the base directory for resolving relative paths.
+// Works correctly for both script execution (node/bun) and Bun compiled executables.
+// When compiled with `bun build --compile`, __dirname points to a temporary extraction
+// directory inside the binary, not to the executable's actual location on disk.
+// process.execPath always points to the running executable (node binary or compiled exe).
+function getBaseDir() {
+   const scriptPath = process.argv[1];
+   if (scriptPath && /\.(js|cjs|mjs)$/i.test(scriptPath)) {
+      // Running as a script with node or bun
+      return path.dirname(path.resolve(scriptPath));
+   }
+   // Running as a Bun compiled executable
+   return path.dirname(process.execPath);
+}
+
 // Load PDF configuration
 function loadPDFConfig(configPath) {
    let pdfConfig;
+   let configDir;
    try {
-      const resolvedPath = configPath || path.join(__dirname, 'pdf-config.json');
+      const resolvedPath = configPath || path.join(getBaseDir(), 'pdf-config.json');
+      configDir = path.dirname(path.resolve(resolvedPath));
       pdfConfig = JSON.parse(fs.readFileSync(resolvedPath, 'utf8'));
       console.log(`Using configuration from: ${resolvedPath}`);
    } catch (err) {
@@ -17,6 +34,7 @@ function loadPDFConfig(configPath) {
       } else {
          console.log('pdf-config.json not found, using default configuration');
       }
+      configDir = getBaseDir();
       // Default configuration if config file is not found
       pdfConfig = {
          document: { layout: 'landscape', size: 'A4', font: 'Courier', margin: 5 },
@@ -25,14 +43,16 @@ function loadPDFConfig(configPath) {
          newPage: { layout: 'landscape', size: 'A4', font: 'Courier', margin: 10 }
       };
    }
+   // Resolve a relative logo path against the config file's directory so that
+   // the logo is found correctly regardless of the current working directory.
+   if (pdfConfig.logo && pdfConfig.logo.path && !path.isAbsolute(pdfConfig.logo.path)) {
+      pdfConfig.logo.path = path.resolve(configDir, pdfConfig.logo.path);
+   }
    return pdfConfig;
 }
 
 function genPDF(file, newDir, pdfConfig) {
-   console.log(file)
    const fileName = path.basename(file);
-   console.log(path.join(newDir, fileName))
-   console.log(file.split('.')[0] + '.pdf')
    const rl = readLine.createInterface({
       input: fs.createReadStream(file)
    });
@@ -44,9 +64,10 @@ function genPDF(file, newDir, pdfConfig) {
       margin: pdfConfig.document.margin 
    });
 
-   const filePDF = path.join(newDir, fileName);
+   const filePDF = path.join(newDir, path.parse(fileName).name + '.pdf');
 
-   pdfDoc.pipe(fs.createWriteStream(filePDF.split('.')[0] + '.pdf'));
+   console.log("Generando: " + filePDF);
+   pdfDoc.pipe(fs.createWriteStream(filePDF));
 
    pdfDoc.fontSize(pdfConfig.text.fontSize);
 
@@ -129,7 +150,6 @@ function main() {
       if (files) {
 
          const folderName = path.join(directoryPath, 'pdf');
-         console.log('----FOLDER---'+folderName)
          try {
             if (!fs.existsSync(folderName)) {
                fs.mkdirSync(folderName);
